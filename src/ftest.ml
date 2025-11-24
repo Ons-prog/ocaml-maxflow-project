@@ -1,4 +1,5 @@
 open Gfile
+open Tools
     
 let () =
 
@@ -27,9 +28,13 @@ let () =
 
   (* Open file *)
   let graph = from_file infile in
+  let graph = (gmap graph int_of_string) in
+  let graph = (add_arc graph 4 5 6) in
+  let graph = (gmap graph string_of_int ) in
 
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
 
   ()
+
 
