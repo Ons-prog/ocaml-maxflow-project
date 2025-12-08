@@ -52,6 +52,9 @@ let write_file path graph =
   close_out ff ;
   ()
 
+
+
+
 (* Reads a line with a node. *)
 let read_node graph line =
   try Scanf.sscanf line "n %f %f %d" (fun _ _ id -> new_node graph id)
@@ -112,3 +115,24 @@ let from_file path =
   close_in infile ;
   final_graph
   
+(* ---------------------------------------------------------------------- *)
+(* Export d'un graphe au format DOT (Graphviz) *)
+
+let export (p : path) (g : string graph) : unit =
+  let out = open_out p in
+
+  (* en-tête DOT *)
+  fprintf out "digraph G {\n";
+
+  (* déclarer tous les nœuds, dans l’ordre trié *)
+  n_iter_sorted g (fun id ->
+      fprintf out "  %d;" id
+    );
+
+  (* toutes les arêtes : src -> tgt [label="..."] *)
+  e_iter g (fun { src; tgt; lbl } ->
+      fprintf out "  %d -> %d [label=\"%s\"];\n" src tgt lbl
+    );
+
+  fprintf out "}\n";
+  close_out out
