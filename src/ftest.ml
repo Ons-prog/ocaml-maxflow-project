@@ -32,7 +32,7 @@ let () =
   let graph = (add_arc graph 4 5 6) in
   let graph = (gmap graph string_of_int ) in
 
-  (* Rewrite the graph that has been read. *)
+  (* Rewrite the graph that has been read.*)
   let () = export outfile graph in
     
 
