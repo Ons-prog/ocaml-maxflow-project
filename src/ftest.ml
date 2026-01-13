@@ -23,18 +23,20 @@ let () =
   and outfile = Sys.argv.(4)
   
   (* These command-line arguments are not used for the moment. *)
-  and _source = int_of_string Sys.argv.(2)
-  and _sink = int_of_string Sys.argv.(3)
+  and source = int_of_string Sys.argv.(2)
+  and sink = int_of_string Sys.argv.(3)
   in
 
   (* Open file *)
-  let graph = from_file infile in
-  let graph = (gmap graph int_of_string) in
-  let maxflow = ford_fulkerson graph source sink find_path in
+  let graph_src = from_file infile in
+  let graph = (gmap graph_src int_of_string) in
+  let (maxflow,flot) = ford_fulkerson graph source sink find_path in
   Printf.printf "Max flow from %d to %d = %d\n%!" source sink maxflow;
 
-  let graph_out = gmap graph string_of_int in
-  export outfile graph_out;
+  
+  export_flow outfile graph flot;
+
+
 
     
 

@@ -137,3 +137,42 @@ let export (p : path) (g : string graph) : unit =
 
   fprintf out "}\n";
   close_out out
+
+
+  
+let export_flow (p : path) (cap : int graph) (flow : int graph) : unit =
+  let out = open_out p in
+
+  fprintf out "digraph G {\n";
+  fprintf out "  rankdir=LR;\n";
+  fprintf out "  splines=true;\n";
+  fprintf out "  overlap=false;\n";
+  fprintf out "  nodesep=0.6;\n";
+  fprintf out "  ranksep=0.8;\n\n";
+  fprintf out "  node [shape=circle, fontsize=12, fixedsize=true, width=0.5];\n";
+  fprintf out "  edge [fontsize=11];\n\n";
+
+  n_iter_sorted cap (fun id -> fprintf out "  %d;\n" id);
+  fprintf out "\n";
+
+  e_iter cap (fun (e : int arc) ->
+      let f =
+        match find_arc flow e.src e.tgt with
+        | None -> 0
+        | Some a -> a.lbl
+      in
+      let c = e.lbl in
+      let label = Printf.sprintf "%d/%d" f c in
+
+      let (color, penwidth, style) =
+        if f <= 0 then ("gray50", "1.0", "")
+        else if f >= c then ("red", "3.5", ", style=\"bold\"")
+        else ("red", "2.5", "")
+      in
+
+      fprintf out "  %d -> %d [label=\"%s\", color=\"%s\", penwidth=%s%s];\n"
+        e.src e.tgt label color penwidth style
+    );
+
+  fprintf out "}\n";
+  close_out out

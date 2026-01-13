@@ -1,22 +1,21 @@
-Base project for Ocaml project on Ford-Fulkerson. This project contains some simple configuration files to facilitate editing Ocaml in VSCode.
+Flot maximum : Ford-Fulkerson
 
-To use, you should install the *OCaml Platform* extension in VSCode.
-Then open VSCode in the root directory of this repository (command line: `code path/to/ocaml-maxflow-project`).
+Ce projet implémente l’algorithme de Ford-Fulkerson pour calculer le flot maximum dans un graphe orienté.
 
-Features :
- - full compilation as VSCode build task (Ctrl+Shift+b)
- - highlights of compilation errors as you type
- - code completion
- - view of variable types
+Compilation:
+make build
 
 
-A [`Makefile`](Makefile) provides some useful commands:
+Visualiser le graphe initial (graph1.txt): 
+./ftest.exe graphs/graph1.txt 0 0 outfile
+dot -Tsvg outfile > graph1_initial.svg
 
- - `make build` to compile. This creates an `ftest.exe` executable
- - `make demo` to run the `ftest` program with some arguments
- - `make format` to indent the entire project
- - `make edit` to open the project in VSCode
- - `make clean` to remove build artifacts
 
-In case of trouble with the VSCode extension (e.g. the project does not build, there are strange mistakes), a common workaround is to (1) close vscode, (2) `make clean`, (3) `make build` and (4) reopen vscode (`make edit`).
+Calcul du flot maximum + visualisation:
+make demo graph=graph1.txt src=0 dst=5
+dot -Tsvg outfile > graph1_final.svg
 
+
+graph1_initial.svg : graphe avant l’algorithme
+
+graph1_final.svg : résultat après Ford–Fulkerson

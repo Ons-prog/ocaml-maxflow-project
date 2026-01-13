@@ -1,6 +1,8 @@
 open Graph
 open Tools 
 
+type path = int arc list
+
 let find_path (g: int graph) (origine : id) (dest : id) = 
   (*On vérifie que le graphe possede bien les noeuds origine et dest*)
   if (not (node_exists g origine) || not (node_exists g dest)) then None else 
@@ -32,6 +34,10 @@ let init_graph_residual (g:int graph) : int graph =
        let acc = add_arc acc e.tgt e.src 0 in       (* arc inverse,avec capa=0 *)
        acc ) gr
 
+let init_flow_graph (g : int graph) : int graph =
+  let fg = clone_nodes g in
+  e_fold g (fun acc e -> add_arc acc e.src e.tgt 0) fg
+
 let augmenting_capa (path:int arc list) : int =
   match path with
   | [] -> 0
@@ -44,16 +50,29 @@ let update_graph_residual (gr:int graph) (path:int arc list) (delta:int) : int g
        let acc = add_arc acc e.tgt e.src (delta) in acc ) gr path
 
 
-let ford_fulkerson (g:int graph) (source:id) (puit:id) (fcDFS: int graph -> id -> id -> (int arc list) option) =
-  let rec loop (gr:int graph) (flot_tot_acc:int) =
+let update_flow (cap : int graph) (flow : int graph) (path : path) (delta : int) : int graph =
+  List.fold_left
+    (fun acc e ->
+      match find_arc cap e.src e.tgt with
+      | Some _ -> add_arc acc e.src e.tgt delta
+      | None -> add_arc acc e.tgt e.src (-delta))
+    flow path
+
+
+let ford_fulkerson (g:int graph) (source:id) (puit:id) (fcDFS:( int graph -> id -> id -> path option)) : int * int graph =
+
+  let gr0 = init_graph_residual g in
+  let flot0 = init_flow_graph g in
+
+  let rec loop (gr:int graph) (flot : int graph) (flot_tot_acc:int) =
     match (fcDFS gr source puit) with (*recherche de chemin augmentant*)
-    | None -> flot_tot_acc  (*ce flot est maximal*)
+    | None -> (flot_tot_acc,flot)  
     | Some path ->
         let delta = (augmenting_capa path) in
-        if delta <= 0 then flot_tot_acc  (* en cas ou un arc est de lbl=0 -> boucle infinir *)
+        if delta <= 0 then (flot_tot_acc,flot)  (* en cas ou un arc est de lbl=0 donc pour eviter boucle infinie *)
         else
           let gr' = update_graph_residual gr path delta in
-          loop gr' (flot_tot_acc + delta)
+          let flot' = update_flow g flot path delta in
+          loop gr' flot' (flot_tot_acc + delta)
   in
-  let gr0 = init_graph_residual g in
-  loop gr0 0
+  loop gr0 flot0 0

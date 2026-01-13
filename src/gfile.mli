@@ -14,6 +14,7 @@ val write_file: path -> string graph -> unit
 
 
 val export : path -> string graph -> unit
+val export_flow : path -> int graph -> int graph -> unit
 
 
 

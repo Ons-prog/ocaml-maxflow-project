@@ -2,7 +2,8 @@
 
 src?=0
 dst?=5
-graph?=graph1.txt
+graph?=graph2.txt
+
 
 all: build
 
@@ -27,3 +28,5 @@ clean:
 	find -L . -name "*~" -delete
 	rm -f *.exe
 	dune clean
+
+
