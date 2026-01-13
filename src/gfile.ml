@@ -126,7 +126,8 @@ let export (p : path) (g : string graph) : unit =
 
   (* déclarer tous les nœuds, dans l’ordre trié *)
   n_iter_sorted g (fun id ->
-      fprintf out "  %d;" id
+      fprintf out "  %d;\n" id
+
     );
 
   (* toutes les arêtes : src -> tgt [label="..."] *)

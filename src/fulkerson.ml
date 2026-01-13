@@ -14,7 +14,7 @@ let find_path (g: int graph) (origine : id) (dest : id) =
             match arcs with
             |[]->None
             |current_arc::rest-> let tgt = current_arc.tgt in
-                if (not (List.mem tgt visited))  
+                if current_arc.lbl > 0 && not (List.mem tgt visited)  
                   then 
                   match (find_path_loop tgt (current_arc::acu_path) (tgt::visited)) with
                     |Some path -> Some path

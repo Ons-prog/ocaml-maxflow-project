@@ -1,5 +1,6 @@
 open Gfile
 open Tools
+open Fulkerson
     
 let () =
 
@@ -29,11 +30,12 @@ let () =
   (* Open file *)
   let graph = from_file infile in
   let graph = (gmap graph int_of_string) in
-  let graph = (add_arc graph 4 5 6) in
-  let graph = (gmap graph string_of_int ) in
+  let maxflow = ford_fulkerson graph source sink find_path in
+  Printf.printf "Max flow from %d to %d = %d\n%!" source sink maxflow;
 
-  (* Rewrite the graph that has been read.*)
-  let () = export outfile graph in
+  let graph_out = gmap graph string_of_int in
+  export outfile graph_out;
+
     
 
   ()
